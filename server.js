@@ -14,20 +14,20 @@ app.get("/", (req, res) => {
 // Перевод
 app.post("/translate", async (req, res) => {
 
-    const text = req.body.text;
-    const target = req.body.target || "en";
-
-    if (!text) {
-        return res.status(400).json({
-            error: "No text"
-        });
-    }
-
-
     try {
 
+        const { text, target } = req.body;
+
+
+        if (!text) {
+            return res.status(400).json({
+                error: "No text"
+            });
+        }
+
+
         const response = await fetch(
-            "https://libretranslate.com/translate",
+            "https://translate.argosopentech.com/translate",
             {
                 method: "POST",
 
@@ -38,7 +38,7 @@ app.post("/translate", async (req, res) => {
                 body: JSON.stringify({
                     q: text,
                     source: "auto",
-                    target: target,
+                    target: target || "en",
                     format: "text"
                 })
             }
@@ -53,20 +53,14 @@ app.post("/translate", async (req, res) => {
         });
 
 
-    } catch (err) {
+    } catch (error) {
 
         res.status(500).json({
-            error: err.message
+            error: error.message
         });
 
     }
 
-});
-
-
-// Если открыть /translate в браузере
-app.get("/translate", (req,res)=>{
-    res.send("Use POST request");
 });
 
 
